@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-export function CreateTodo(props) {
-    // react-query
+export function CreateTodo({ onAdd }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
@@ -10,7 +9,6 @@ export function CreateTodo(props) {
             padding: 10,
             margin: 10
         }} type="text" placeholder="title" onChange={function(e) {
-            const value = e.target.value;
             setTitle(e.target.value);
         }}></input> <br />
     
@@ -18,7 +16,6 @@ export function CreateTodo(props) {
             padding: 10,
             margin: 10
         }} type="text" placeholder="description" onChange={function(e) {
-            const value = e.target.value;
             setDescription(e.target.value);
         }}></input> <br />
 
@@ -26,7 +23,12 @@ export function CreateTodo(props) {
             padding: 10,
             margin: 10
         }} onClick={() => {
-            // axios
+            // Update the local state immediately for testing
+            if (onAdd) {
+                onAdd({ title: title, description: description, completed: false });
+            }
+
+            // Original fetch call to your backend
             fetch("http://localhost:3000/todo", {
                 method: "POST",
                 body: JSON.stringify({
@@ -37,11 +39,13 @@ export function CreateTodo(props) {
                     "Content-type": "application/json"
                 }
             })
-                .then(async function(res) {
-                    const json = await res.json();
-                    alert("Todo added");
-                })
+            .then(async function(res) {
+                await res.json();
+                alert("Todo added to database");
+            })
+            .catch(function(err) {
+                console.log("Backend might be offline, but added to UI for testing!");
+            });
         }}>Add a todo</button>
     </div>
 }
-
