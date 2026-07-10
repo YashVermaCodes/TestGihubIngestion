@@ -18,6 +18,7 @@ export function Todos({ todos, onDelete }) {
                     onClick={() => onDelete(index)}
                 >
                     Delete
+                    
                 </button>
             </div>
         })}
